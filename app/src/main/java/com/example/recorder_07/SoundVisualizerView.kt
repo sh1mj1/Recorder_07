@@ -25,14 +25,19 @@ class SoundVisualizerView (
     private var drawingAmplitudes: List<Int> = emptyList()
     // For test (10번 최대값까지 임의 수를 리스트에 넣기)
 //    var drawingAmplitudes: List<Int> = (0..10).map{ Random.nextInt(Short.MAX_VALUE.toInt())}
-
+    private var isReplaying = false
+    private var replayingPosition: Int = 0
 
     private val visualizeRepeatAction: Runnable = object: Runnable {
         override fun run() {
             // TODO: Amplitude 가져오고 Draw 요청 \
-            val currentAmplitude = onRequestCurrentAmplitude?.invoke() ?:0
+            if(!isReplaying){
+                val currentAmplitude = onRequestCurrentAmplitude?.invoke() ?:0
+                drawingAmplitudes = listOf(currentAmplitude) + drawingAmplitudes
+            }else{
+                replayingPosition++
+            }
 
-            drawingAmplitudes = listOf(currentAmplitude) + drawingAmplitudes
             invalidate() // 데이터가 초기화 되었을 때 이걸 호출 해야 onDraw 가 다시 호출됨. 호출하지 않으면 데이터는 계속 추가되는데 뷰가 갱신이 안된다.
             handler?.postDelayed(this, 20L)
 
@@ -58,7 +63,15 @@ class SoundVisualizerView (
         var offsetX = drawingWidth.toFloat()
         // 수많은 진폭값들을 리스트의 원소로 오른쪽부터 접근할 거임. (drawingAmplitudes)
         // (UI가 오른쪽부터 왼쪽으로 이동하는 느낌으로 보이니까)
-        drawingAmplitudes.forEach {amplitude ->
+        drawingAmplitudes
+            .let{ amplitudes ->
+                if(isReplaying){
+                    amplitudes.takeLast(replayingPosition) // 가장 뒤에 있는 것부터 순서대로 가져오게
+                }else{
+                    amplitudes
+                }
+            }
+            .forEach {amplitude ->
             val lineLength = amplitude / MAX_AMPLITUDE * drawingHeight * 0.8F
 
             offsetX -= LINE_SPACE
@@ -80,7 +93,8 @@ class SoundVisualizerView (
 
     }
 
-    fun startVisualizing() {
+    fun startVisualizing(isReplaying: Boolean) {
+        this.isReplaying = isReplaying // 현재 우리가 가지고 있는 drawingAmplitudes 가 있는데 Replaying 할 때는 visualizeRepeatAction
         handler?.post(visualizeRepeatAction)
     }
 

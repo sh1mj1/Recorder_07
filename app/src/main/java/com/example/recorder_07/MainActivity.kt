@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             prepare()
         }
         recorder?.start()
-        soundVisualizerView.startVisualizing()
+        soundVisualizerView.startVisualizing(false)
         state = State.ON_RECORDING
         Log.d("AudioState", "AudioState: $state")
     }
@@ -103,6 +103,7 @@ class MainActivity : AppCompatActivity() {
             //  또 로딩 중 로딩인디케이터같은 UI 를 사용. 하지만 우리는 단지 방금 녹음된 거승ㄹ 가져오는 것 뿐이기 때문에 async 하지 않으 ㄱ서임.
             prepare()
         }
+        soundVisualizerView.startVisualizing(true)
         player?.start()
         state = State.ON_PLAYING
         Log.d("AudioState", "AudioState: $state")
@@ -111,6 +112,7 @@ class MainActivity : AppCompatActivity() {
     private fun stopPlaying(){
         player?.release()
         player = null
+        soundVisualizerView.stopVisualizing()
         state = State.AFTER_RECORDING
         Log.d("AudioState", "AudioState: $state")
     }
