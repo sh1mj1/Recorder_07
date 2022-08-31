@@ -15,6 +15,9 @@ class MainActivity : AppCompatActivity() {
     private val soundVisualizerView: SoundVisualizerView by lazy { findViewById(R.id.soundVisualizer_V) }
     private val resetBtn: Button by lazy { findViewById(R.id.reset_Btn) }
     private val recordBtn: RecordBtn by lazy { findViewById(R.id.record_Btn) }
+    private val recordTimeView: CountUpView by lazy { findViewById(R.id.recordTime_Tv) }
+
+
     private val requiredPermissions = arrayOf(Manifest.permission.RECORD_AUDIO)
     private var state = State.BEFORE_RECORDING
     set(value) {
@@ -82,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         }
         recorder?.start()
         soundVisualizerView.startVisualizing(false)
+        recordTimeView.startCountUp()
         state = State.ON_RECORDING
         Log.d("AudioState", "AudioState: $state")
     }
@@ -92,6 +96,7 @@ class MainActivity : AppCompatActivity() {
         }
         recorder = null
         soundVisualizerView.stopVisualizing()
+        recordTimeView.stopCountUp()
         state = State.AFTER_RECORDING
         Log.d("AudioState", "AudioState: $state")
     }
@@ -104,6 +109,7 @@ class MainActivity : AppCompatActivity() {
             prepare()
         }
         soundVisualizerView.startVisualizing(true)
+        recordTimeView.startCountUp()
         player?.start()
         state = State.ON_PLAYING
         Log.d("AudioState", "AudioState: $state")
@@ -112,6 +118,7 @@ class MainActivity : AppCompatActivity() {
     private fun stopPlaying(){
         player?.release()
         player = null
+        recordTimeView.stopCountUp()
         soundVisualizerView.stopVisualizing()
         state = State.AFTER_RECORDING
         Log.d("AudioState", "AudioState: $state")

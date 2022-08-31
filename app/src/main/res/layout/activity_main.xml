@@ -29,7 +29,7 @@
         />
 
 
-    <TextView
+    <com.example.recorder_07.CountUpView
         android:id="@+id/recordTime_Tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
