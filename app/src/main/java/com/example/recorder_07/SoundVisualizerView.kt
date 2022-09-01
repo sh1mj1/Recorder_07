@@ -99,7 +99,15 @@ class SoundVisualizerView (
     }
 
     fun stopVisualizing() {
+            // 리플레잉 할 때 리플레이가 마무리 되었을 때 그것을 초기화하는
+        replayingPosition = 0
+            // 부분
         handler?.removeCallbacks(visualizeRepeatAction)
+    }
+
+    fun clearVisualization(){
+        drawingAmplitudes = emptyList()
+        invalidate()
     }
 
 

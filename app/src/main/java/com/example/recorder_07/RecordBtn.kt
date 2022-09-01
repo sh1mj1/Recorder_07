@@ -10,6 +10,12 @@ class RecordBtn(
     attrs: AttributeSet
 ) : AppCompatImageButton(context, attrs) {
 
+    // RecordBtn 의 재사용성을 더 늘리고 싶으면 xml 에서 속성으로 지정하지 않고 이 클래스 자체에 넣어준다.
+    init {
+        setBackgroundResource(R.drawable.shape_oval_button)
+    }
+
+
     fun updateIconWithState(state: State){
         when (state) {
             State.BEFORE_RECORDING -> {
